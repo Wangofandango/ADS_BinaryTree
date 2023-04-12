@@ -4,54 +4,45 @@ import java.util.Queue;
 
 public class BinarySearchTree<T> extends BinaryTree<T>
 {
-  private BinarySearchTreeNode root;
+  public boolean insert(T element) {
+    BinarySearchTreeNode current, parent;
 
+    BinarySearchTreeNode tempNode = new BinarySearchTreeNode(element);
 
-  public boolean insert(T element){
-    BinarySearchTreeNode newNode = new BinarySearchTreeNode(element);
-
-    if (isEmpty())
-    {
-      root = newNode;
+    if (getRoot() == null) {
+      setRoot(tempNode);
       return true;
+    } else {
+      current = (BinarySearchTreeNode) getRoot();
     }
 
-    BinarySearchTreeNode current = root;
-    BinarySearchTreeNode parentToCurrent = null;
-    while(true)
-    {
-      int comparedValue = current.compareTo(element);
+    while (true) {
+      parent = current;
 
-      if (comparedValue > 0){
-
-        current = (BinarySearchTreeNode) root.getRightChild();
-
-        if (current == null)
-        {
-          parentToCurrent.addRightChild(newNode);
+      if (current.compareTo(element) > 0) {
+        current = (BinarySearchTreeNode) current.getLeftChild();
+        if (current == null) {
+          parent.addLeftChild(tempNode);
           return true;
         }
-      }
 
-      else if (comparedValue < 0){
-        current = (BinarySearchTreeNode) root.getLeftChild();
-        if (current == null)
-        {
-          parentToCurrent.addLeftChild(newNode);
+      } else if (current.compareTo(element) < 0) {
+        current = (BinarySearchTreeNode) current.getRightChild();
+
+        if (current == null) {
+          parent.addRightChild(tempNode);
           return true;
         }
-      }
-
-      //comparedValue == 0
-      else {
+      } else
+      {
         return false;
       }
-      parentToCurrent = current;
+
     }
   }
 
   public boolean removeElement(T element){
-    BinarySearchTreeNode curr = root;
+    BinarySearchTreeNode curr = (BinarySearchTreeNode) getRoot();
     BinarySearchTreeNode prev = null;
 
     // Check if the key is actually
@@ -128,7 +119,7 @@ public class BinarySearchTree<T> extends BinaryTree<T>
 
   public T findMin()
   {
-    BinarySearchTreeNode current = root;
+    BinarySearchTreeNode current = (BinarySearchTreeNode) getRoot();
     while (current.getLeftChild() != null)
     {
       current = (BinarySearchTreeNode) current.getLeftChild();
@@ -138,7 +129,7 @@ public class BinarySearchTree<T> extends BinaryTree<T>
 
   public T findMax()
   {
-    BinarySearchTreeNode current = root;
+    BinarySearchTreeNode current = (BinarySearchTreeNode) getRoot();
     while (current.getRightChild() != null)
     {
       current = (BinarySearchTreeNode) current.getRightChild();
@@ -147,7 +138,7 @@ public class BinarySearchTree<T> extends BinaryTree<T>
   }
 
   public boolean contains(T element){
-    BinarySearchTreeNode current = root;
+    BinarySearchTreeNode current = (BinarySearchTreeNode) getRoot();
     while (current != null)
     {
       int comparedValue = current.compareTo(element);
@@ -220,6 +211,6 @@ public class BinarySearchTree<T> extends BinaryTree<T>
       }
     }
 
-    this.root = root;
+    setRoot(root);
     }
   }
