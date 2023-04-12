@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class BinarySearchTree<T> extends BinaryTree<T>
 {
@@ -166,22 +168,58 @@ public class BinarySearchTree<T> extends BinaryTree<T>
   }
 
   public void rebalance(){
+    // if the array is empty return null
     ArrayList<T> inOrderList = inOrder();
-    //Make a new tree
-    BinarySearchTree<T> newTree = new BinarySearchTree<>();
 
-    //Check if the arraylist size is event or odd
-    if (inOrderList.size() % 2 == 0)
-    {
-      //If the size is even, make the root the element in the middle of the arraylist -1
-      newTree.setRoot(new BinarySearchTreeNode(inOrderList.get(inOrderList.size()/2 - 1)));
-    }
-    else
-    {
-      //Make the root of the tree the center of the arraylist
-      newTree.setRoot(
-          new BinarySearchTreeNode(inOrderList.get(inOrderList.size() / 2)));
+    if (inOrderList.size() == 0) {
+      return;
     }
 
+    int n = inOrderList.size();
+    int mid = n / 2;
+    BinarySearchTreeNode root = new BinarySearchTreeNode(inOrderList.get(mid));
+    // initializing queue
+    Queue<Object[]> q = new LinkedList<>();
+    // push the root and its indices to the queue
+    q.add(new Object[] { root,
+            new int[] { 0, mid - 1 } });
+    q.add(new Object[] {
+            root, new int[] { mid + 1, n - 1 } });
+
+    while (!q.isEmpty()) {
+      // get the front element from the queue
+      Object[] curr = q.poll();
+
+      // get the parent node and its indices
+      BinarySearchTreeNode parent = (BinarySearchTreeNode) curr[0];
+      int[] indices = (int[])curr[1];
+      int left = indices[0];
+      int right = indices[1];
+
+      // if there are elements to process and parent
+      // node is not null
+      if (left <= right && parent != null) {
+        mid = (left + right) / 2;
+        BinarySearchTreeNode child = new BinarySearchTreeNode(inOrderList.get(mid));
+
+        // set the child node as left or right child
+        // of the parent node
+        if (parent.compareTo(inOrderList.get(mid)) > 0) {
+          parent.addLeftChild(child);
+        }
+        else {
+          parent.addRightChild(child);
+        }
+
+        // push the left and right child and their
+        // indices to the queue
+        q.add(new Object[] {
+                child, new int[] { left, mid - 1 } });
+        q.add(new Object[] {
+                child, new int[] { mid + 1, right } });
+      }
+    }
+
+    this.root = root;
+    }
   }
-}
