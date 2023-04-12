@@ -84,6 +84,8 @@ public class BinaryTree<T>
   }
 
   public ArrayList<T> preOrder(){
+    //Make an arraylist and print the tree into the arraylist in pre order
+
     if (isEmpty())
       return null;
 
@@ -98,6 +100,7 @@ public class BinaryTree<T>
     // traverse the tree
     while (current != null || s.size() > 0)
     {
+
       /* Reach the left most Node of the
       curr Node */
       while (current !=  null)
@@ -106,17 +109,13 @@ public class BinaryTree<T>
            the stack before traversing
           the node's left subtree */
         s.push(current);
-
         //Cast to T and add to arraylist
         preOrderList.add((T)current.getElement());
-
         current = current.getLeftChild();
       }
 
       /* Current must be NULL at this point */
       current = s.pop();
-
-
 
       /* we have visited the node and its
          left subtree.  Now, it's right
@@ -128,6 +127,8 @@ public class BinaryTree<T>
   }
 
   public ArrayList<T> postOrder(){
+    //Make an arraylist and print the tree into the arraylist in post order
+
     if (isEmpty())
       return null;
 
@@ -150,7 +151,6 @@ public class BinaryTree<T>
            the stack before traversing
           the node's left subtree */
         s.push(current);
-
         current = current.getLeftChild();
       }
 
@@ -170,44 +170,37 @@ public class BinaryTree<T>
   }
 
   public ArrayList<T> levelOrder(){
+    //make an arraylist and print the tree into the arraylist in level order
+    ArrayList<T> levelOrderList = new ArrayList<>();
+
     if (isEmpty())
       return null;
 
-    //Stack used for algorithm
-    Stack<BinaryTreeNode> s = new Stack<>();
+    // create an empty queue and enqueue the root node
+    Queue<BinaryTreeNode> queue = new ArrayDeque<>();
+    queue.add(root);
 
-    //Arraylist to return
-    ArrayList<T> levelOrderList = new ArrayList<>();
+    BinaryTreeNode front = null;
 
-    BinaryTreeNode current = root;
+    // loop till queue is empty
 
-    // traverse the tree
-    while (current != null || s.size() > 0)
+    while (!queue.isEmpty())
     {
-      /* Reach the left most Node of the
-      curr Node */
-      while (current !=  null)
-      {
-        /* place pointer to a tree node on
-           the stack before traversing
-          the node's left subtree */
-        s.push(current);
-
-        current = current.getLeftChild();
-      }
-
-      /* Current must be NULL at this point */
-      current = s.pop();
-
-      /* we have visited the node and its
-         left subtree.  Now, it's right
-         subtree's turn */
-      current = current.getRightChild();
+      // process each node of the current level and enqueue their
+      // non-empty left and right child
+      front = queue.poll();
 
       //Cast to T and add to arraylist
-      levelOrderList.add((T)current.getElement());
-    }
+      levelOrderList.add((T)front.getElement());
 
+      if (front.getLeftChild() != null) {
+        queue.add(front.getLeftChild());
+      }
+
+      if (front.getRightChild() != null) {
+        queue.add(front.getRightChild());
+      }
+    }
     return levelOrderList;
   }
 
