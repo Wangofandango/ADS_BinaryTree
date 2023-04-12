@@ -1,7 +1,4 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class BinaryTree<T>
 {
@@ -31,6 +28,43 @@ public class BinaryTree<T>
 
   public int getSize()
   {
+    if (root == null) {
+      size = 0;
+      return size;
+    }
+
+    // Using level order Traversal.
+    Queue<BinaryTreeNode> q = new LinkedList<BinaryTreeNode>();
+    q.offer(root);
+
+    int count = 1;
+    while (!q.isEmpty())
+    {
+      BinaryTreeNode tmp = q.poll();
+
+      // when the queue is empty:
+      // the poll() method returns null.
+      if (tmp != null)
+      {
+        if (tmp.getLeftChild() != null)
+        {
+          // Increment count
+          count++;
+
+          // Enqueue left child
+          q.offer(tmp.getLeftChild());
+        }
+        if (tmp.getRightChild() != null)
+        {
+          // Increment count
+          count++;
+
+          // Enqueue left child
+          q.offer(tmp.getRightChild());
+        }
+      }
+    }
+    size = count;
     return size;
   }
 
@@ -41,8 +75,9 @@ public class BinaryTree<T>
   public ArrayList<T> inOrder(){
 
       if (isEmpty())
+      {
         return null;
-
+      }
       //Stack used for algorithm
       Stack<BinaryTreeNode> s = new Stack<>();
 
@@ -128,42 +163,52 @@ public class BinaryTree<T>
 
   public ArrayList<T> postOrder(){
     //Make an arraylist and print the tree into the arraylist in post order
+    ArrayList<T> postOrderList = new ArrayList<>();
+    Stack<BinaryTreeNode> S = new Stack<BinaryTreeNode>();
 
-    if (isEmpty())
+    // Check for empty tree
+    if (root == null)
       return null;
 
-    //Stack used for algorithm
-    Stack<BinaryTreeNode> s = new Stack<>();
+    S.push(root);
+    BinaryTreeNode prev = null;
+    while (!S.isEmpty()) {
+      BinaryTreeNode current = S.peek();
 
-    //Arraylist to return
-    ArrayList<T> postOrderList = new ArrayList<>();
+            /* go down the tree in search of a leaf an if so
+            process it and pop stack otherwise move down */
+      if (prev == null || prev.getLeftChild() == current || prev.getRightChild() == current) {
+        if (current.getLeftChild() != null)
+          S.push(current.getLeftChild());
+        else if (current.getRightChild() != null)
+          S.push(current.getRightChild());
+        else {
+          S.pop();
+          postOrderList.add((T) current.getElement());
+        }
 
-    BinaryTreeNode current = root;
+                /* go up the tree from left node, if the
+                child is right push it onto stack otherwise
+                process parent and pop stack */
+      }
+      else if (current.getLeftChild() == prev) {
+        if (current.getRightChild() != null)
+          S.push(current.getRightChild());
+        else {
+          S.pop();
+          postOrderList.add((T) current.getElement());
+        }
 
-    // traverse the tree
-    while (current != null || s.size() > 0)
-    {
-      /* Reach the left most Node of the
-      curr Node */
-      while (current !=  null)
-      {
-        /* place pointer to a tree node on
-           the stack before traversing
-          the node's left subtree */
-        s.push(current);
-        current = current.getLeftChild();
+                /* go up the tree from right node and after
+                coming back from right node process parent
+                and pop stack */
+      }
+      else if (current.getRightChild() == prev) {
+        S.pop();
+        postOrderList.add((T) current.getElement());
       }
 
-      /* Current must be NULL at this point */
-      current = s.pop();
-
-      /* we have visited the node and its
-         left subtree.  Now, it's right
-         subtree's turn */
-      current = current.getRightChild();
-
-      //Cast to T and add to arraylist
-      postOrderList.add((T)current.getElement());
+      prev = current;
     }
 
     return postOrderList;

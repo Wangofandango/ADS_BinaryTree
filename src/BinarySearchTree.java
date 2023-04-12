@@ -4,9 +4,9 @@ import java.util.Queue;
 
 public class BinarySearchTree<T> extends BinaryTree<T>
 {
+
   public boolean insert(T element) {
     BinarySearchTreeNode current, parent;
-
     BinarySearchTreeNode tempNode = new BinarySearchTreeNode(element);
 
     if (getRoot() == null) {
@@ -31,6 +31,7 @@ public class BinarySearchTree<T> extends BinaryTree<T>
 
         if (current == null) {
           parent.addRightChild(tempNode);
+
           return true;
         }
       } else
